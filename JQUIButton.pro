@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    JQUIButton.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    JQUIButton.h
 
 FORMS    += mainwindow.ui
