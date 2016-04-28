@@ -30,7 +30,7 @@ void JQUIButton::init(QRectF iFrame){
 
 void JQUIButton::setFrame(QRectF iFrame){
     this->_frame = iFrame;
-    update();
+    this->setPos(_frame.x(), _frame.y());
 }
 
 QRectF JQUIButton::getFrame(){
@@ -79,7 +79,7 @@ void JQUIButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         }else{
             painter->setPen(_fontColorForNormal);
             painter->setFont(_fontForNormal);
-            painter->drawText(boundingRect().toRect(), _titleForNormal);
+            painter->drawText(boundingRect().toRect(), Qt::AlignCenter, _titleForNormal);
         }
     }else{
         if (_imgForDown){

@@ -8,9 +8,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QGraphicsScene *scene = new QGraphicsScene();
-    JQUIButton* btn = new JQUIButton();
-    btn->setTitle("Hello, zk");
-    scene->addItem(btn);
+    for (int i = 0; i < 100; ++i){
+        JQUIButton* btn = new JQUIButton();
+        btn->setFrame(QRectF(i/10*60, i%10*60, 50, 50));
+        btn->setTitle("Hello");
+        btn->setBgImg(new QPixmap("D:\\My_Project\\Resource\\image\\weixin_normal.png"));
+        scene->addItem(btn);
+    }
+
     QGraphicsView *view = new QGraphicsView();
     view->setScene(scene);
     view->show();
