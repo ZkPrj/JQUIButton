@@ -19,13 +19,20 @@
 #include <QFont>
 #include <QColor>
 #include <QPainter>
+#include <QGraphicsSceneMouseEvent>
 
 typedef enum{
     JQUIButtonStatusNormal = 0,
     JQUIButtonStatusDown
 }JQUIButtonStatus;
 
+class JQUIButton;
 
+class JQUIButtonDelegate : public QObject{
+public :
+    virtual void handlePressDown(JQUIButton* iSender, QGraphicsSceneMouseEvent* iEvent) = 0;
+    virtual void handleReleaseUp(JQUIButton* iSender, QGraphicsSceneMouseEvent* iEvent) = 0;
+};
 
 class JQUIButton : public QGraphicsItem
 {
@@ -43,6 +50,10 @@ public:
     void setTitleAtStatus(QString iTitle, JQUIButtonStatus iStatus, QFont iFont, QColor iColor);
     virtual QRectF	boundingRect() const;
     virtual void	paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+public:
+    JQUIButtonDelegate* delegate;
 private:
     QPixmap* _imgForDown;
     QPixmap* _imgForNormal;

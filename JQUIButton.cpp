@@ -1,3 +1,4 @@
+#include <QCursor>
 #include "JQUIButton.h"
 
 #define JQUIBTN_DEFAULT_H 21
@@ -8,7 +9,7 @@
 JQUIButton::JQUIButton()
 {
     QRectF lRect = QRectF(0.0, 0.0, JQUIBTN_DEFAULT_W, JQUIBTN_DEFAULT_H);
-
+    setCursor(Qt::OpenHandCursor);
     init(lRect);
 }
 
@@ -26,6 +27,7 @@ void JQUIButton::init(QRectF iFrame){
     _imgForBg = NULL;
     _imgForNormal = NULL;
     _imgForDown = NULL;
+    this->delegate = NULL;
 }
 
 void JQUIButton::setFrame(QRectF iFrame){
@@ -62,11 +64,26 @@ void JQUIButton::setImgAtStatus(QPixmap *iPixmap, JQUIButtonStatus iStatus){
     }
 }
 
+void JQUIButton::setTitleAtStatus(QString iTitle, JQUIButtonStatus iStatus, QFont iFont, QColor iColor){
+    if (iStatus == JQUIButtonStatusNormal){
+        this->_titleForNormal = iTitle;
+        this->_fontForNormal = iFont;
+        this->_fontColorForNormal = iColor;
+    }else{
+        this->_titleForDown = iTitle;
+        this->_fontForDown = iFont;
+        this->_fontColorForDown = iColor;
+    }
+    this->update();
+}
+
 QRectF JQUIButton::boundingRect() const{
     return QRectF(-1 * _frame.width() / 2, -1 * _frame.height() / 2, _frame.width(), _frame.height());
 }
 
 void JQUIButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     if  (_imgForBg){
         QPixmap lBgImg = _imgForBg->scaled(_frame.size().toSize(), Qt::KeepAspectRatio);
         painter->drawPixmap(boundingRect().toRect(), lBgImg);
@@ -91,13 +108,31 @@ void JQUIButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         }else if (_titleForDown.count() > 0){
             painter->setPen(_fontColorForDown);
             painter->setFont(_fontForDown);
-            painter->drawText(boundingRect().toRect(), _titleForNormal);
+            painter->drawText(boundingRect().toRect(), Qt::AlignCenter, _titleForNormal);
         }else{
             painter->setPen(_fontColorForNormal);
             painter->setFont(_fontForNormal);
-            painter->drawText(boundingRect().toRect(), _titleForNormal);
+            painter->drawText(boundingRect().toRect(), Qt::AlignCenter, _titleForNormal);
         }
     }
+}
+
+void JQUIButton::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    setCursor(Qt::ClosedHandCursor);
+    _status = JQUIButtonStatusDown;
+    if (delegate){
+        this->delegate->handlePressDown(this, event);
+    }
+    update();
+}
+
+void JQUIButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
+   setCursor(Qt::OpenHandCursor);
+   _status = JQUIButtonStatusNormal;
+   if (delegate){
+        this->delegate->handleReleaseUp(this, event);
+    }
+   update();
 }
 
 
